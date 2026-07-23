@@ -695,13 +695,14 @@ def render_about(config):
 
 
 def render_sitemap(config, arts, svcs, munis):
+    today = datetime.date.today().isoformat()
     urls = [
-        f"  <url><loc>{config['site_url']}/</loc></url>",
-        f"  <url><loc>{config['site_url']}/services.html</loc></url>",
-        f"  <url><loc>{config['site_url']}/municipalities.html</loc></url>",
-        f"  <url><loc>{config['site_url']}/checklist.html</loc></url>",
-        f"  <url><loc>{config['site_url']}/articles.html</loc></url>",
-        f"  <url><loc>{config['site_url']}/about.html</loc></url>",
+        f"  <url><loc>{config['site_url']}/</loc><lastmod>{today}</lastmod></url>",
+        f"  <url><loc>{config['site_url']}/services.html</loc><lastmod>{today}</lastmod></url>",
+        f"  <url><loc>{config['site_url']}/municipalities.html</loc><lastmod>{today}</lastmod></url>",
+        f"  <url><loc>{config['site_url']}/checklist.html</loc><lastmod>{today}</lastmod></url>",
+        f"  <url><loc>{config['site_url']}/articles.html</loc><lastmod>{today}</lastmod></url>",
+        f"  <url><loc>{config['site_url']}/about.html</loc><lastmod>{today}</lastmod></url>",
     ]
     for a in arts:
         urls.append(
