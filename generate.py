@@ -443,7 +443,7 @@ def render_service_page(config, svc):
     url = f"{config['site_url']}/{svc['slug']}.html"
     types = f'<span class="tag">{html.escape(svc.get("type", ""))}</span>' if svc.get("type") else ""
     website_row = (
-        f"<tr><th>公式サイト</th><td><a href=\"{html.escape(svc['website'])}\">{html.escape(svc['website'])}</a></td></tr>"
+        f"<tr><th>公式サイト</th><td><a href=\"{html.escape(svc['website'])}\" target=\"_blank\" rel=\"noopener noreferrer\">{html.escape(svc['website'])}</a></td></tr>"
         if svc.get("website") else ""
     )
     inner = f"""
@@ -526,7 +526,7 @@ def render_municipal_page(config, m):
     <tr><th>対象者</th><td>{html.escape(m.get('target', ''))}</td></tr>
     <tr><th>費用</th><td>{html.escape(m.get('cost', ''))}</td></tr>
     <tr><th>申込窓口</th><td>{html.escape(m.get('contact', ''))}</td></tr>
-    <tr><th>情報源</th><td><a href="{html.escape(m.get('source_url', ''))}">{html.escape(m.get('source_url', ''))}</a></td></tr>
+    <tr><th>情報源</th><td><a href="{html.escape(m.get('source_url', ''))}" target="_blank" rel="noopener noreferrer">{html.escape(m.get('source_url', ''))}</a></td></tr>
   </table>
   <div class="article-body">
     <h2>サービス内容</h2>
