@@ -302,11 +302,22 @@ def article_structured_data(config, art, url):
     return "".join(blocks)
 
 
+def render_author_box(config):
+    author = html.escape(config.get("author", ""))
+    return f"""
+<aside class="author-box">
+  <p><strong>{author}</strong>が、警察庁・消費者庁など公的機関の一次情報や各社公式サイトの情報をもとに作成しています。
+  運営方針や記事の作成方針は<a href="about.html">運営者情報のページ</a>をご覧ください。</p>
+</aside>
+"""
+
+
 def render_article_page(config, art, arts):
     url = f"{config['site_url']}/{art['slug']}.html"
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in art["tags"])
     faq_html = render_faq_section(art.get("faqs"))
     related_html = render_related_section(related_articles(art, arts))
+    author_html = render_author_box(config)
     inner = f"""
 <article>
   <p class="crumb"><a href="articles.html">詐欺対策・見守りガイド</a> ＞ 記事</p>
@@ -317,6 +328,7 @@ def render_article_page(config, art, arts):
   {art['body_html']}
   </div>
   {faq_html}
+  {author_html}
   {related_html}
   <p class="back"><a href="articles.html">← ガイド一覧へ戻る</a></p>
 </article>
@@ -695,6 +707,8 @@ font-size:.72rem;padding:3px 8px;border-radius:20px;margin-right:6px}
 .faq-item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0}
 .faq-item summary{font-weight:700;cursor:pointer}
 .faq-item p{margin:10px 0 0;color:#555}
+.author-box{margin-top:30px;background:#f0f5fa;border:1px solid var(--line);border-radius:10px;
+padding:14px 18px;font-size:.85rem;color:#555}
 .related{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px}
 .related h2{font-size:1.1rem;margin-top:0}
 .related ul{margin:0;padding-left:1.2em}.related li{margin:6px 0}
