@@ -209,6 +209,7 @@ def page_shell(config, title, description, inner, canonical, head_extra=""):
   <nav class="site-nav">
     <a href="index.html">トップ</a>
     <a href="services.html">見守りサービスを比較</a>
+    <a href="municipalities.html">自治体の無料見守り制度</a>
     <a href="articles.html">詐欺対策・見守りガイド</a>
     <a href="about.html">運営者情報</a>
   </nav>
@@ -417,8 +418,74 @@ def render_service_page(config, svc):
                       svc.get("features", svc["name"]), inner, url, head_extra)
 
 
-def render_index(config, arts, svcs):
+def municipal_structured_data(config, m, url):
+    return jsonld({
+        "@context": "https://schema.org",
+        "@type": "GovernmentService",
+        "name": m["program_name"],
+        "serviceOperator": {"@type": "GovernmentOrganization", "name": m.get("area", "")},
+        "description": m.get("services", ""),
+        "url": url,
+    })
+
+
+def render_municipal_card(m):
+    return f"""
+  <li class="card">
+    <a href="{m['slug']}.html">
+      <span class="card-title">{html.escape(m['area'])} ／ {html.escape(m['program_name'])}</span>
+      <span class="card-desc">費用: {html.escape(m.get('cost', ''))}</span>
+      <span class="card-date">更新日: {m.get('updated', '')}</span>
+    </a>
+  </li>"""
+
+
+def render_municipalities_index(config, munis):
+    items = "".join(render_municipal_card(m) for m in sorted(munis, key=lambda x: x["id"]))
+    inner = f"""
+<h1 class="index-h1">自治体の無料見守り制度を比較</h1>
+<p class="index-lead">お住まいの自治体によって、緊急通報装置の貸与や電話での安否確認など、無料〜低額で使える見守り制度の内容・費用は異なります。ここでは確認できた範囲の制度を紹介します。制度は変更されることがあるため、必ずお住まいの自治体窓口でも最新情報をご確認ください。</p>
+<ul class="card-list">{items}
+</ul>
+<p class="count">現在 {len(munis)} 自治体分を掲載中(全国網羅ではありません。今後追加予定です)</p>
+"""
+    return page_shell(config, f"自治体の無料見守り制度を比較 | {config['site_title']}",
+                      "自治体が実施している高齢者向け見守り制度の比較ページです。",
+                      inner, config["site_url"] + "/municipalities.html")
+
+
+def render_municipal_page(config, m):
+    url = f"{config['site_url']}/{m['slug']}.html"
+    caution_html = (
+        f'<p class="meta">⚠ {html.escape(m["caution"])}</p>' if m.get("caution") else ""
+    )
+    inner = f"""
+<article>
+  <p class="crumb"><a href="municipalities.html">自治体の無料見守り制度を比較</a> ＞ 詳細</p>
+  <h1>{html.escape(m['area'])} ／ {html.escape(m['program_name'])}</h1>
+  <table class="fac-table">
+    <tr><th>対象者</th><td>{html.escape(m.get('target', ''))}</td></tr>
+    <tr><th>費用</th><td>{html.escape(m.get('cost', ''))}</td></tr>
+    <tr><th>申込窓口</th><td>{html.escape(m.get('contact', ''))}</td></tr>
+    <tr><th>情報源</th><td><a href="{html.escape(m.get('source_url', ''))}">{html.escape(m.get('source_url', ''))}</a></td></tr>
+  </table>
+  <div class="article-body">
+    <h2>サービス内容</h2>
+    <p>{html.escape(m.get('services', ''))}</p>
+  </div>
+  {caution_html}
+  <p class="meta">情報更新日: {m.get('updated', '')}(制度は変更される場合があります。お住まいの自治体窓口でも必ずご確認ください)</p>
+  <p class="back"><a href="municipalities.html">← 自治体一覧へ戻る</a></p>
+</article>
+"""
+    head_extra = municipal_structured_data(config, m, url)
+    return page_shell(config, f"{m['area']} {m['program_name']} | {config['site_title']}",
+                      m.get("services", m["program_name"]), inner, url, head_extra)
+
+
+def render_index(config, arts, svcs, munis):
     svc_items = "".join(render_service_card(s) for s in sorted(svcs, key=lambda x: x["id"])[:6])
+    muni_items = "".join(render_municipal_card(m) for m in sorted(munis, key=lambda x: x["id"])[:6])
     art_items = ""
     for a in sorted(arts, key=lambda x: (x["date"], x["id"]), reverse=True)[:6]:
         art_items += f"""
@@ -437,6 +504,13 @@ def render_index(config, arts, svcs):
   <ul class="card-list">{svc_items}
   </ul>
   <p class="more"><a href="services.html">サービス一覧をすべて見る →</a></p>
+</section>
+
+<section>
+  <h2 class="section-h2">自治体の無料見守り制度（{len(munis)}自治体分掲載中）</h2>
+  <ul class="card-list">{muni_items}
+  </ul>
+  <p class="more"><a href="municipalities.html">自治体一覧をすべて見る →</a></p>
 </section>
 
 <section>
@@ -478,10 +552,11 @@ def render_about(config):
                       inner, config["site_url"] + "/about.html")
 
 
-def render_sitemap(config, arts, svcs):
+def render_sitemap(config, arts, svcs, munis):
     urls = [
         f"  <url><loc>{config['site_url']}/</loc></url>",
         f"  <url><loc>{config['site_url']}/services.html</loc></url>",
+        f"  <url><loc>{config['site_url']}/municipalities.html</loc></url>",
         f"  <url><loc>{config['site_url']}/articles.html</loc></url>",
         f"  <url><loc>{config['site_url']}/about.html</loc></url>",
     ]
@@ -494,6 +569,11 @@ def render_sitemap(config, arts, svcs):
         urls.append(
             f"  <url><loc>{config['site_url']}/{s['slug']}.html</loc>"
             f"<lastmod>{s.get('updated', '')}</lastmod></url>"
+        )
+    for m in munis:
+        urls.append(
+            f"  <url><loc>{config['site_url']}/{m['slug']}.html</loc>"
+            f"<lastmod>{m.get('updated', '')}</lastmod></url>"
         )
     body = "\n".join(urls)
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -551,13 +631,17 @@ def build_site(config):
     all_svcs = load_json(DATA / "services.json", [])
     svcs = [s for s in all_svcs if s.get("status") == "published"]
 
+    all_munis = load_json(DATA / "municipalities.json", [])
+    munis = [m for m in all_munis if m.get("status") == "published"]
+
     DOCS.mkdir(exist_ok=True)
     (DOCS / "style.css").write_text(STYLE, encoding="utf-8")
-    (DOCS / "index.html").write_text(render_index(config, arts, svcs), encoding="utf-8")
+    (DOCS / "index.html").write_text(render_index(config, arts, svcs, munis), encoding="utf-8")
     (DOCS / "articles.html").write_text(render_articles_index(config, arts), encoding="utf-8")
     (DOCS / "services.html").write_text(render_services_index(config, svcs), encoding="utf-8")
+    (DOCS / "municipalities.html").write_text(render_municipalities_index(config, munis), encoding="utf-8")
     (DOCS / "about.html").write_text(render_about(config), encoding="utf-8")
-    (DOCS / "sitemap.xml").write_text(render_sitemap(config, arts, svcs), encoding="utf-8")
+    (DOCS / "sitemap.xml").write_text(render_sitemap(config, arts, svcs, munis), encoding="utf-8")
     (DOCS / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {config['site_url']}/sitemap.xml\n",
         encoding="utf-8")
@@ -567,7 +651,10 @@ def build_site(config):
     for s in svcs:
         (DOCS / f"{s['slug']}.html").write_text(
             render_service_page(config, s), encoding="utf-8")
-    print(f"[build] サイトを生成: 記事{len(arts)}件 / サービス{len(svcs)}件")
+    for m in munis:
+        (DOCS / f"{m['slug']}.html").write_text(
+            render_municipal_page(config, m), encoding="utf-8")
+    print(f"[build] サイトを生成: 記事{len(arts)}件 / サービス{len(svcs)}件 / 自治体{len(munis)}件")
 
 
 def main():
