@@ -210,6 +210,7 @@ def page_shell(config, title, description, inner, canonical, head_extra=""):
     <a href="index.html">トップ</a>
     <a href="services.html">見守りサービスを比較</a>
     <a href="municipalities.html">自治体の無料見守り制度</a>
+    <a href="checklist.html">詐欺対策チェックリスト</a>
     <a href="articles.html">詐欺対策・見守りガイド</a>
     <a href="about.html">運営者情報</a>
   </nav>
@@ -532,6 +533,83 @@ def render_index(config, arts, svcs, munis):
                       inner, config["site_url"] + "/", head_extra)
 
 
+def checklist_item(text):
+    return f'<li class="check-item"><label><input type="checkbox"> {html.escape(text)}</label></li>'
+
+
+def render_checklist(config):
+    oreore = "".join(checklist_item(t) for t in [
+        "電話でお金や家族の話をされたら、いったん電話を切り、自分から相手の家族に確認の電話をかけ直す",
+        "「至急」「今すぐ」「誰にも言わないで」と急かす電話は詐欺を疑う",
+        "「還付金がATMで戻る」という話は詐欺(還付金の手続きでATMを操作することはない)",
+        "「携帯電話番号が変わった」という連絡は、以前から知っている番号にかけ直して本人確認する",
+    ])
+    kakuu = "".join(checklist_item(t) for t in [
+        "身に覚えのない請求のハガキ・メール・SMSには回答せず、記載の連絡先には連絡しない",
+        "「今日中に連絡しないと法的手続きに移る」等の脅し文句は詐欺の典型的なパターン",
+        "自分で判断せず、まず消費生活センター(188)に相談してから対応する",
+    ])
+    sns = "".join(checklist_item(t) for t in [
+        "SNSやマッチングアプリで知り合った人からの投資の勧誘には応じない",
+        "「元本保証」「必ず儲かる」という言葉が出たら詐欺を疑う",
+        "会ったことのない相手にお金を送らない・送金を頼まれても応じない",
+    ])
+    phone = "".join(checklist_item(t) for t in [
+        "留守番電話機能を常にオンにし、知らない番号にはすぐ出ない",
+        "ナンバーディスプレイで発信元を確認する習慣をつける",
+        "迷惑電話防止機能・自動録音機能付きの電話機への切り替えを検討する",
+    ])
+    talk = "".join(checklist_item(t) for t in [
+        "「詐欺に気をつけて」ではなく、具体的な手口の実例を挙げて伝える",
+        "「お金の話が出たら必ず家族に電話してから」というルールを事前に決めておく",
+        "定期的に連絡を取り合うこと自体が抑止力になることを伝える",
+    ])
+    inner = f"""
+<article>
+  <h1>詐欺対策チェックリスト(印刷用)</h1>
+  <p class="index-lead">このページは印刷して冷蔵庫や電話のそばに貼っておける、特殊詐欺対策のチェックリストです。印刷する場合はブラウザの印刷機能(Ctrl+P / Cmd+P)をお使いください。</p>
+
+  <section class="checklist-section">
+    <h2>オレオレ詐欺・還付金詐欺</h2>
+    <ul class="check-list">{oreore}</ul>
+  </section>
+
+  <section class="checklist-section">
+    <h2>架空請求</h2>
+    <ul class="check-list">{kakuu}</ul>
+  </section>
+
+  <section class="checklist-section">
+    <h2>SNS型投資詐欺・ロマンス詐欺</h2>
+    <ul class="check-list">{sns}</ul>
+  </section>
+
+  <section class="checklist-section">
+    <h2>電話機の設定</h2>
+    <ul class="check-list">{phone}</ul>
+  </section>
+
+  <section class="checklist-section">
+    <h2>実家の親と話すときのポイント</h2>
+    <ul class="check-list">{talk}</ul>
+  </section>
+
+  <section class="checklist-section">
+    <h2>緊急連絡先</h2>
+    <table class="fac-table">
+      <tr><th>警察相談専用電話</th><td>#9110</td></tr>
+      <tr><th>消費生活センター</th><td>188(いやや!)</td></tr>
+    </table>
+  </section>
+
+  <p class="back no-print"><a href="index.html">← トップへ戻る</a></p>
+</article>
+"""
+    return page_shell(config, f"詐欺対策チェックリスト(印刷用) | {config['site_title']}",
+                      "特殊詐欺・オレオレ詐欺対策のチェックリストです。印刷して冷蔵庫や電話のそばに貼ってご利用いただけます。",
+                      inner, config["site_url"] + "/checklist.html")
+
+
 def render_about(config):
     inner = f"""
 <article>
@@ -557,6 +635,7 @@ def render_sitemap(config, arts, svcs, munis):
         f"  <url><loc>{config['site_url']}/</loc></url>",
         f"  <url><loc>{config['site_url']}/services.html</loc></url>",
         f"  <url><loc>{config['site_url']}/municipalities.html</loc></url>",
+        f"  <url><loc>{config['site_url']}/checklist.html</loc></url>",
         f"  <url><loc>{config['site_url']}/articles.html</loc></url>",
         f"  <url><loc>{config['site_url']}/about.html</loc></url>",
     ]
@@ -621,6 +700,18 @@ font-size:.72rem;padding:3px 8px;border-radius:20px;margin-right:6px}
 .related ul{margin:0;padding-left:1.2em}.related li{margin:6px 0}
 .site-footer{border-top:1px solid var(--line);padding:24px 18px;text-align:center;color:#999;font-size:.78rem}
 .disclaimer{max-width:600px;margin:0 auto 10px}
+.checklist-section{margin-top:30px}
+.check-list{list-style:none;padding:0;margin:10px 0}
+.check-item{background:var(--card);border:1px solid var(--line);border-radius:8px;
+padding:10px 14px;margin:8px 0}
+.check-item label{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.check-item input[type="checkbox"]{width:1.15em;height:1.15em;margin-top:.15em;flex-shrink:0}
+@media print{
+  .site-header,.site-footer,.no-print{display:none}
+  body{background:#fff}
+  .container{max-width:100%}
+  .check-item{border:1px solid #999;break-inside:avoid}
+}
 """
 
 
@@ -640,6 +731,7 @@ def build_site(config):
     (DOCS / "articles.html").write_text(render_articles_index(config, arts), encoding="utf-8")
     (DOCS / "services.html").write_text(render_services_index(config, svcs), encoding="utf-8")
     (DOCS / "municipalities.html").write_text(render_municipalities_index(config, munis), encoding="utf-8")
+    (DOCS / "checklist.html").write_text(render_checklist(config), encoding="utf-8")
     (DOCS / "about.html").write_text(render_about(config), encoding="utf-8")
     (DOCS / "sitemap.xml").write_text(render_sitemap(config, arts, svcs, munis), encoding="utf-8")
     (DOCS / "robots.txt").write_text(

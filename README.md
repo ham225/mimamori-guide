@@ -36,6 +36,7 @@
 | `data/keywords.json` | コラムで書きたい検索キーワードのリスト |
 | `data/services.json` | 掲載する見守りサービスの比較情報（人力で追記・編集） |
 | `data/municipalities.json` | 自治体の無料見守り制度の比較情報（人力で追記・編集。必ず自治体公式サイトで確認したものだけ掲載） |
+| (`checklist.html`は`generate.py`内に固定文で実装。印刷して冷蔵庫等に貼れるチェックリストページ) | |
 | `data/config.json` | サイト名・URL・運営者情報・免責文などの設定 |
 | `generate.py` | 本体。コラムをAIに書かせつつ、サービス比較ページも含めてサイトを生成 |
 | `articles/` | 生成されたコラム記事データ（元データ） |
