@@ -675,6 +675,25 @@ def render_checklist(config):
                       inner, config["site_url"] + "/checklist.html")
 
 
+def render_404(config):
+    inner = """
+<article>
+  <h1>ページが見つかりませんでした</h1>
+  <p class="index-lead">お探しのページは移動または削除された可能性があります。以下から探してみてください。</p>
+  <ul class="card-list">
+    <li class="card"><a href="index.html"><span class="card-title">トップページ</span></a></li>
+    <li class="card"><a href="services.html"><span class="card-title">見守りサービスを比較</span></a></li>
+    <li class="card"><a href="municipalities.html"><span class="card-title">自治体の無料見守り制度</span></a></li>
+    <li class="card"><a href="checklist.html"><span class="card-title">詐欺対策チェックリスト(印刷用)</span></a></li>
+    <li class="card"><a href="articles.html"><span class="card-title">詐欺対策・見守りガイドの記事一覧</span></a></li>
+  </ul>
+</article>
+"""
+    return page_shell(config, f"ページが見つかりません | {config['site_title']}",
+                      "お探しのページが見つかりませんでした。",
+                      inner, config["site_url"] + "/404.html")
+
+
 def render_about(config):
     inner = f"""
 <article>
@@ -804,6 +823,7 @@ def build_site(config):
     (DOCS / "municipalities.html").write_text(render_municipalities_index(config, munis), encoding="utf-8")
     (DOCS / "checklist.html").write_text(render_checklist(config), encoding="utf-8")
     (DOCS / "about.html").write_text(render_about(config), encoding="utf-8")
+    (DOCS / "404.html").write_text(render_404(config), encoding="utf-8")
     (DOCS / "sitemap.xml").write_text(render_sitemap(config, arts, svcs, munis), encoding="utf-8")
     (DOCS / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {config['site_url']}/sitemap.xml\n",
