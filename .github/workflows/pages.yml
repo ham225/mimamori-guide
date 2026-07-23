@@ -1,0 +1,40 @@
+name: docsの変更をPagesへデプロイ
+
+# 人間が data/*.json や docs/ を直接編集してpushしたときに、
+# 夜間ワークフローを待たずにその場でPagesへ反映するための仕組み。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+  workflow_dispatch:
+
+permissions:
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Pages用に設定
+        uses: actions/configure-pages@v5
+
+      - name: docsをアーティファクト化
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: GitHub Pagesへデプロイ
+        id: deployment
+        uses: actions/deploy-pages@v4

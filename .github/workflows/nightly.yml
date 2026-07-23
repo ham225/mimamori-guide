@@ -8,6 +8,12 @@ on:
 
 permissions:
   contents: write   # 生成した記事をリポジトリに書き戻すため
+  pages: write      # このジョブ内で直接Pagesへデプロイするため
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   generate:
@@ -40,3 +46,16 @@ jobs:
             git commit -m "自動生成: $(date -u +%Y-%m-%d)"
             git push
           fi
+
+      # botによるpushはGitHub Pagesの自動ビルドをトリガーしないため、
+      # 同じジョブの中で直接デプロイまで行う(再トリガー待ちにしない)。
+      - name: Pages用に設定
+        uses: actions/configure-pages@v5
+
+      - name: docsをアーティファクト化
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: GitHub Pagesへデプロイ
+        uses: actions/deploy-pages@v4
