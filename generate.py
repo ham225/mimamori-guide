@@ -239,6 +239,23 @@ def related_articles(art, arts, limit=4):
     return others[:limit]
 
 
+CROSS_LINK_TARGETS = [
+    ("services.html", "見守りサービスを比較する"),
+    ("municipalities.html", "自治体の無料見守り制度を確認する"),
+    ("checklist.html", "詐欺対策チェックリストを見る(印刷用)"),
+    ("articles.html", "詐欺対策・見守りガイドの記事を読む"),
+]
+
+
+def render_cross_links(current_page):
+    """記事・サービス比較・自治体制度・チェックリストを相互リンクさせるための固定ナビ。"""
+    items = "".join(
+        f'<li><a href="{href}">{html.escape(label)}</a></li>'
+        for href, label in CROSS_LINK_TARGETS if href != current_page
+    )
+    return f'<nav class="cross-links"><h2>あわせて確認したいページ</h2><ul>{items}</ul></nav>'
+
+
 def render_faq_section(faqs):
     if not faqs:
         return ""
@@ -329,6 +346,7 @@ def render_article_page(config, art, arts):
   </div>
   {faq_html}
   {author_html}
+  {render_cross_links("articles.html")}
   {related_html}
   <p class="back"><a href="articles.html">← ガイド一覧へ戻る</a></p>
 </article>
@@ -423,6 +441,7 @@ def render_service_page(config, svc):
     <p>{html.escape(svc.get('features', ''))}</p>
   </div>
   <p class="meta">情報更新日: {svc.get('updated', '')}(料金・仕様は変更される場合があります。契約前に公式サイトでご確認ください)</p>
+  {render_cross_links("services.html")}
   <p class="back"><a href="services.html">← 見守りサービス一覧へ戻る</a></p>
 </article>
 """
@@ -488,6 +507,7 @@ def render_municipal_page(config, m):
   </div>
   {caution_html}
   <p class="meta">情報更新日: {m.get('updated', '')}(制度は変更される場合があります。お住まいの自治体窓口でも必ずご確認ください)</p>
+  {render_cross_links("municipalities.html")}
   <p class="back"><a href="municipalities.html">← 自治体一覧へ戻る</a></p>
 </article>
 """
@@ -614,6 +634,7 @@ def render_checklist(config):
     </table>
   </section>
 
+  <div class="no-print">{render_cross_links("checklist.html")}</div>
   <p class="back no-print"><a href="index.html">← トップへ戻る</a></p>
 </article>
 """
@@ -712,6 +733,9 @@ padding:14px 18px;font-size:.85rem;color:#555}
 .related{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px}
 .related h2{font-size:1.1rem;margin-top:0}
 .related ul{margin:0;padding-left:1.2em}.related li{margin:6px 0}
+.cross-links{margin-top:20px;background:#fff9ec;border:1px solid #eee0c0;border-radius:12px;padding:16px 20px}
+.cross-links h2{font-size:1rem;margin-top:0;color:#8a6d1a}
+.cross-links ul{margin:0;padding-left:1.2em}.cross-links li{margin:6px 0}
 .site-footer{border-top:1px solid var(--line);padding:24px 18px;text-align:center;color:#999;font-size:.78rem}
 .disclaimer{max-width:600px;margin:0 auto 10px}
 .checklist-section{margin-top:30px}
