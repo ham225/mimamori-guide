@@ -222,7 +222,7 @@ def page_shell(config, title, description, inner, canonical, head_extra=""):
 <header class="site-header">
   <a class="site-title" href="index.html">{html.escape(site)}</a>
   <p class="site-tagline">{html.escape(config['site_description'])}</p>
-  <nav class="site-nav">
+  <nav class="site-nav" aria-label="サイト共通メニュー">
     <a href="index.html">トップ</a>
     <a href="services.html">見守りサービスを比較</a>
     <a href="municipalities.html">自治体の無料見守り制度</a>
@@ -269,7 +269,7 @@ def render_cross_links(current_page):
         f'<li><a href="{href}">{html.escape(label)}</a></li>'
         for href, label in CROSS_LINK_TARGETS if href != current_page
     )
-    return f'<nav class="cross-links"><h2>あわせて確認したいページ</h2><ul>{items}</ul></nav>'
+    return f'<nav class="cross-links" aria-label="あわせて確認したいページ"><h2>あわせて確認したいページ</h2><ul>{items}</ul></nav>'
 
 
 def render_faq_section(faqs):
@@ -290,7 +290,7 @@ def render_related_section(related):
         f"<li><a href='{a['slug']}.html'>{html.escape(a['title'])}</a></li>"
         for a in related
     )
-    return f"<nav class='related'><h2>あわせて読みたい</h2><ul>{links}</ul></nav>"
+    return f"<nav class='related' aria-label='あわせて読みたい記事'><h2>あわせて読みたい</h2><ul>{links}</ul></nav>"
 
 
 def article_structured_data(config, art, url):
