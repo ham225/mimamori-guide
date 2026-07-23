@@ -732,7 +732,7 @@ background:var(--bg);color:var(--ink);line-height:1.8}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .site-header{background:#fff;border-bottom:1px solid var(--line);padding:18px 20px;text-align:center}
 .site-title{font-size:1.3rem;font-weight:700;color:var(--ink)}
-.site-tagline{margin:6px 0 0;font-size:.8rem;color:#777}
+.site-tagline{margin:6px 0 0;font-size:.8rem;color:#6b6b6b}
 .site-nav{margin-top:12px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;font-size:.85rem}
 .container{max-width:760px;margin:0 auto;padding:24px 18px}
 .index-h1{font-size:1.5rem}.index-lead{color:#555}
@@ -743,11 +743,11 @@ padding:16px 18px;color:var(--ink)}
 .card a:hover{border-color:var(--accent);text-decoration:none}
 .card-title{display:block;font-weight:700;font-size:1.05rem}
 .card-desc{display:block;color:#666;font-size:.85rem;margin:6px 0}
-.card-date{display:block;color:#aaa;font-size:.75rem}
+.card-date{display:block;color:#6b6b6b;font-size:.75rem}
 .more{margin-top:10px;font-size:.85rem}
-.count{color:#999;font-size:.8rem;text-align:center;margin-top:16px}
+.count{color:#6b6b6b;font-size:.8rem;text-align:center;margin-top:16px}
 article h1{font-size:1.5rem;line-height:1.4}
-.crumb{font-size:.8rem;color:#999}.meta{color:#999;font-size:.8rem}
+.crumb{font-size:.8rem;color:#6b6b6b}.meta{color:#6b6b6b;font-size:.8rem}
 .tags{margin:8px 0 20px}.tag{display:inline-block;background:#e7f0f8;color:#2d5f8a;
 font-size:.72rem;padding:3px 8px;border-radius:20px;margin-right:6px}
 .fac-table{width:100%;border-collapse:collapse;margin:16px 0}
@@ -769,7 +769,7 @@ padding:14px 18px;font-size:.85rem;color:#555}
 .cross-links{margin-top:20px;background:#fff9ec;border:1px solid #eee0c0;border-radius:12px;padding:16px 20px}
 .cross-links h2{font-size:1rem;margin-top:0;color:#8a6d1a}
 .cross-links ul{margin:0;padding-left:1.2em}.cross-links li{margin:6px 0}
-.site-footer{border-top:1px solid var(--line);padding:24px 18px;text-align:center;color:#999;font-size:.78rem}
+.site-footer{border-top:1px solid var(--line);padding:24px 18px;text-align:center;color:#6b6b6b;font-size:.78rem}
 .disclaimer{max-width:600px;margin:0 auto 10px}
 .checklist-section{margin-top:30px}
 .check-list{list-style:none;padding:0;margin:10px 0}
