@@ -184,6 +184,19 @@ def ga4_snippet(config):
     )
 
 
+def breadcrumb_structured_data(crumbs):
+    """crumbs: [(名前, URL), ...] トップから現在ページまで順に並べたもの。"""
+    items = [
+        {"@type": "ListItem", "position": i + 1, "name": name, "item": url}
+        for i, (name, url) in enumerate(crumbs)
+    ]
+    return jsonld({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": items,
+    })
+
+
 def page_shell(config, title, description, inner, canonical, head_extra=""):
     site = config["site_title"]
     return f"""<!DOCTYPE html>
@@ -351,7 +364,12 @@ def render_article_page(config, art, arts):
   <p class="back"><a href="articles.html">← ガイド一覧へ戻る</a></p>
 </article>
 """
-    head_extra = article_structured_data(config, art, url)
+    crumbs = [
+        ("トップ", config["site_url"] + "/"),
+        ("詐欺対策・見守りガイド", config["site_url"] + "/articles.html"),
+        (art["title"], url),
+    ]
+    head_extra = article_structured_data(config, art, url) + breadcrumb_structured_data(crumbs)
     return page_shell(config, art["title"], art["description"], inner, url, head_extra)
 
 
@@ -445,7 +463,12 @@ def render_service_page(config, svc):
   <p class="back"><a href="services.html">← 見守りサービス一覧へ戻る</a></p>
 </article>
 """
-    head_extra = service_structured_data(config, svc, url)
+    crumbs = [
+        ("トップ", config["site_url"] + "/"),
+        ("見守りサービスを比較", config["site_url"] + "/services.html"),
+        (svc["name"], url),
+    ]
+    head_extra = service_structured_data(config, svc, url) + breadcrumb_structured_data(crumbs)
     return page_shell(config, f"{svc['name']} | {config['site_title']}",
                       svc.get("features", svc["name"]), inner, url, head_extra)
 
@@ -511,7 +534,12 @@ def render_municipal_page(config, m):
   <p class="back"><a href="municipalities.html">← 自治体一覧へ戻る</a></p>
 </article>
 """
-    head_extra = municipal_structured_data(config, m, url)
+    crumbs = [
+        ("トップ", config["site_url"] + "/"),
+        ("自治体の無料見守り制度を比較", config["site_url"] + "/municipalities.html"),
+        (f"{m['area']} {m['program_name']}", url),
+    ]
+    head_extra = municipal_structured_data(config, m, url) + breadcrumb_structured_data(crumbs)
     return page_shell(config, f"{m['area']} {m['program_name']} | {config['site_title']}",
                       m.get("services", m["program_name"]), inner, url, head_extra)
 
