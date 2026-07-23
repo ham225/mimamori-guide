@@ -301,6 +301,7 @@ def article_structured_data(config, art, url):
         "@type": "Article",
         "headline": art["title"],
         "description": art["description"],
+        "image": config["site_url"] + "/ogp.png",
         "datePublished": art["date"],
         "dateModified": art["date"],
         "author": {"@type": "Organization", "name": config.get("author", site)},
