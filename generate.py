@@ -212,6 +212,9 @@ def page_shell(config, title, description, inner, canonical, head_extra=""):
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="{html.escape(site)}">
+<meta property="og:image" content="{html.escape(config['site_url'])}/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
 <link rel="stylesheet" href="style.css">
 {ga4_snippet(config)}{head_extra}<!-- AdSense用: 審査通過後にここへ広告コードを貼る -->
 </head>
